@@ -1,5 +1,7 @@
 package cn.bucheng.mysql.binlog;
 
+import cn.bucheng.mysql.aware.BeanFactoryUtils;
+import cn.bucheng.mysql.callback.BinlogConfigMapper;
 import com.github.shyiko.mysql.binlog.BinaryLogClient;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -35,16 +37,16 @@ public class BinlogComponent {
                     config.getUsername(),
                     config.getPassword()
             );
+            retryRestConfig(config);
             if (!StringUtils.isEmpty(config.getBinlogFile())) {
                 log.info("---------set binlog file and position-----------");
                 client.setBinlogFilename(config.getBinlogFile());
                 client.setBinlogPosition(config.getBinlogPosition());
             }
 
-            if(!config.getBinlogPosition().equals(-1L)){
+            if (!config.getBinlogPosition().equals(-1L)) {
                 client.setBinlogPosition(config.getBinlogPosition());
             }
-
             client.registerEventListener(listener);
 
             try {
@@ -58,6 +60,13 @@ public class BinlogComponent {
 
         thread.setName("binlog-listener-thread");
         thread.start();
+    }
+
+    private void retryRestConfig(BinLogConfig binLogConfig) {
+        BinlogConfigMapper configMapper = BeanFactoryUtils.getBeanFactory().getBean(BinlogConfigMapper.class);
+        if (configMapper != null) {
+            configMapper.configMapper(binLogConfig);
+        }
     }
 
 
