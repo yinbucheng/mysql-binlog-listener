@@ -135,10 +135,6 @@ public class TableColumnIdAndNameHolder implements CommandLineRunner {
     }
 
 
-    public TableBO getTableBO(String dbName, String tableName) {
-        return cache.get(BinLogUtils.createKey(dbName.toLowerCase(), tableName.toLowerCase()));
-    }
-
     public TableBO getTableBO(String key) {
         return cache.get(key);
     }

@@ -3,6 +3,7 @@ package cn.bucheng.mysqlbinloglistener.utils;
 
 import org.apache.commons.beanutils.BeanUtils;
 
+import java.io.Serializable;
 import java.util.Map;
 import java.util.Set;
 
@@ -15,17 +16,17 @@ import java.util.Set;
  */
 public class BinLogUtils {
 
-    public static String createKey(String dbName,String tableName){
-        return dbName+"-"+tableName;
+    public static String createKey(String dbName, String tableName) {
+        return dbName + "-" + tableName;
     }
 
 
-    public static <T> T decode(Class<T> clazz , Map<String,Object> msg){
+    public static <T> T decode(Class<T> clazz, Map<String, Serializable> msg) {
         try {
             T cls = clazz.newInstance();
-            Set<Map.Entry<String, Object>> entrySet = msg.entrySet();
-            for(Map.Entry<String,Object> entry : entrySet){
-                BeanUtils.setProperty(cls,entry.getKey(),entry.getValue());
+            Set<Map.Entry<String, Serializable>> entrySet = msg.entrySet();
+            for (Map.Entry<String, Serializable> entry : entrySet) {
+                BeanUtils.setProperty(cls, entry.getKey(), entry.getValue());
             }
             return cls;
         } catch (Exception e) {
@@ -33,7 +34,6 @@ public class BinLogUtils {
         }
         return null;
     }
-
 
 
 }

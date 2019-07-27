@@ -11,7 +11,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import java.io.Serializable;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -56,7 +55,7 @@ public class CompositeListener implements BinaryLogClient.EventListener {
         if (rows != null) {
             for (Serializable[] row : rows) {
                 int length = row.length;
-                Map<String, Object> result = new HashMap<>();
+                Map<String, Serializable> result = new HashMap<>();
                 TableBO tableBO = holder.getTableBO(key);
                 for (int i = 0; i < length; i++) {
                     String name = tableBO.getJavaName(i);
@@ -64,6 +63,7 @@ public class CompositeListener implements BinaryLogClient.EventListener {
                 }
                 //这里的数据存放在map中
                 Object entity = BinLogUtils.decode(tableBO.getClazz(), result);
+                resetValueToEntity(entity,result);
                 for (IListener listener : listeners) {
                     listener.saveEvent(entity);
                 }
@@ -83,13 +83,14 @@ public class CompositeListener implements BinaryLogClient.EventListener {
         for (Map.Entry<Serializable[], Serializable[]> row : rows) {
             Serializable[] value = row.getValue();
             int length = value.length;
-            Map<String, Object> result = new HashMap<>();
+            Map<String, Serializable> result = new HashMap<>();
             TableBO tableBO = holder.getTableBO(key);
             for (int i = 0; i < length; i++) {
                 String name = tableBO.getJavaName(i);
                 result.put(name, value[i]);
             }
             Object entity = BinLogUtils.decode(tableBO.getClazz(), result);
+            resetValueToEntity(entity,result);
             for (IListener listener : listeners) {
                 listener.updateEvent(entity);
             }
@@ -111,5 +112,10 @@ public class CompositeListener implements BinaryLogClient.EventListener {
                 }
             }
         }
+    }
+
+    //埋点方法，用于提供用户实现自定义设置,如果想用继承这个类并实现这个方法
+    public  void resetValueToEntity(Object entity,Map<String,Serializable> values){
+
     }
 }
