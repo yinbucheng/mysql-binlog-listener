@@ -18,5 +18,5 @@ public class BinLogConfig {
     private String username;
     private String password;
     private String binlogFile;
-    private Long binlogFilePosition;
+    private Long binlogPosition;
 }

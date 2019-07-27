@@ -35,11 +35,14 @@ public class BinlogComponent {
                     config.getUsername(),
                     config.getPassword()
             );
-            if (!StringUtils.isEmpty(config.getBinlogFile()) &&
-                    !config.getBinlogFilePosition().equals(-1L)) {
+            if (!StringUtils.isEmpty(config.getBinlogFile())) {
                 log.info("---------set binlog file and position-----------");
                 client.setBinlogFilename(config.getBinlogFile());
-                client.setBinlogPosition(config.getBinlogFilePosition());
+                client.setBinlogPosition(config.getBinlogPosition());
+            }
+
+            if(!config.getBinlogPosition().equals(-1L)){
+                client.setBinlogPosition(config.getBinlogPosition());
             }
 
             client.registerEventListener(listener);
