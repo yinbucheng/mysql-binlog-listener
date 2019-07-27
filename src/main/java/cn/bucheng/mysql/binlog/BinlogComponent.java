@@ -44,7 +44,7 @@ public class BinlogComponent {
                 client.setBinlogPosition(config.getBinlogPosition());
             }
 
-            if (!config.getBinlogPosition().equals(-1L)) {
+            if (config.getBinlogPosition() != null && !config.getBinlogPosition().equals(-1L)) {
                 client.setBinlogPosition(config.getBinlogPosition());
             }
             client.registerEventListener(listener);
@@ -63,9 +63,10 @@ public class BinlogComponent {
     }
 
     private void retryRestConfig(BinLogConfig binLogConfig) {
-        BinlogConfigMapper configMapper = BeanFactoryUtils.getBeanFactory().getBean(BinlogConfigMapper.class);
-        if (configMapper != null) {
-            configMapper.configMapper(binLogConfig);
+        String[] beanNamesForType = BeanFactoryUtils.getBeanFactory().getBeanNamesForType(BinlogConfigMapper.class);
+        if (beanNamesForType != null && beanNamesForType.length != 0) {
+            BinlogConfigMapper binlogConfigMapper = BeanFactoryUtils.getBeanFactory().getBean(BinlogConfigMapper.class);
+            binlogConfigMapper.configMapper(binLogConfig);
         }
     }
 
