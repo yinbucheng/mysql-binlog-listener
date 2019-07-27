@@ -16,6 +16,7 @@ import org.springframework.jdbc.core.RowMapper;
 import org.springframework.stereotype.Component;
 import org.springframework.util.StringUtils;
 
+import java.beans.Transient;
 import java.lang.reflect.Field;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -102,7 +103,7 @@ public class TableColumnIdAndNameHolder implements CommandLineRunner {
             synchronized (listenerLock) {
                 if (iListeners == null) {
                     iListeners = new LinkedList<>();
-                    listeners.put(key,iListeners);
+                    listeners.put(key, iListeners);
                 }
             }
         }
@@ -117,6 +118,9 @@ public class TableColumnIdAndNameHolder implements CommandLineRunner {
         if (fields != null) {
             for (Field field : fields) {
                 field.setAccessible(true);
+                if (field.getAnnotation(Transient.class) != null) {
+                    continue;
+                }
                 ColumnName column = field.getAnnotation(ColumnName.class);
                 String javaColumn = field.getName();
                 String sqlColumn = javaColumn;
