@@ -5,6 +5,7 @@ import cn.bucheng.mysqlbinloglistener.annotation.ColumnName;
 import cn.bucheng.mysqlbinloglistener.annotation.TableName;
 import cn.bucheng.mysqlbinloglistener.aware.BeanFactoryUtils;
 import cn.bucheng.mysqlbinloglistener.entity.TableBO;
+import cn.bucheng.mysqlbinloglistener.handle.FieldValueHandle;
 import cn.bucheng.mysqlbinloglistener.listener.IListener;
 import cn.bucheng.mysqlbinloglistener.utils.BinLogUtils;
 import lombok.extern.slf4j.Slf4j;
@@ -37,6 +38,8 @@ public class TableColumnIdAndNameHolder implements CommandLineRunner {
 
     private Object listenerLock = new Object();
 
+    private Map<String, FieldValueHandle> handleMap = new ConcurrentHashMap<>();
+
     private Map<String, LinkedList<IListener>> listeners = new ConcurrentHashMap<>(40);
 
     private Map<String, TableBO> cache = new HashMap<>(40);
@@ -57,20 +60,41 @@ public class TableColumnIdAndNameHolder implements CommandLineRunner {
             }
         }
 
+        String[] handleNamesForTypes = BeanFactoryUtils.getBeanFactory().getBeanNamesForType(FieldValueHandle.class);
+        if (handleNamesForTypes != null) {
+            for (String beanName : handleNamesForTypes) {
+                FieldValueHandle bean = BeanFactoryUtils.getBeanFactory().getBean(beanName, FieldValueHandle.class);
+                Class classType = bean.getClassType();
+                String key = getKey(classType);
+                handleMap.put(key, bean);
+            }
+        }
+
     }
 
-
-    private void registerListener(Class clazz, IListener iListener) {
-        log.info("begin apply sqlColumn to javaColumn and register listener");
+    private TableName getTableName(Class clazz) {
         TableName annotation = (TableName) clazz.getAnnotation(TableName.class);
         if (annotation == null) {
             log.error("please mark cn.bucheng.mysql.binloglistener.annotation.TableName annotation to entity");
             throw new RuntimeException("please mark cn.bucheng.mysql.binloglistener.annotation.TableName annotation to entity");
         }
+        return annotation;
+    }
+
+    private String getKey(Class clazz) {
+        TableName annotation = getTableName(clazz);
         String key = BinLogUtils.createKey(annotation.schema().toLowerCase(), annotation.table().toLowerCase());
+        return key;
+    }
+
+
+    private void registerListener(Class clazz, IListener iListener) {
+        log.info("begin apply sqlColumn to javaColumn and register listener");
+        String key = getKey(clazz);
         applyMysqlColumnToJavaColumn(clazz, key);
         addListeners(key, iListener);
     }
+
 
     private void addListeners(String key, IListener listener) {
         LinkedList<IListener> iListeners = listeners.get(key);
@@ -147,5 +171,9 @@ public class TableColumnIdAndNameHolder implements CommandLineRunner {
 
     public List<IListener> getListenerByKey(String key) {
         return listeners.get(key);
+    }
+
+    public FieldValueHandle getFieldValueHandle(String key){
+        return handleMap.get(key);
     }
 }

@@ -1,6 +1,7 @@
 package cn.bucheng.mysqlbinloglistener.binlog;
 
 import cn.bucheng.mysqlbinloglistener.entity.TableBO;
+import cn.bucheng.mysqlbinloglistener.handle.FieldValueHandle;
 import cn.bucheng.mysqlbinloglistener.holder.TableColumnIdAndNameHolder;
 import cn.bucheng.mysqlbinloglistener.listener.IListener;
 import cn.bucheng.mysqlbinloglistener.utils.BinLogUtils;
@@ -61,9 +62,14 @@ public class CompositeListener implements BinaryLogClient.EventListener {
                     String name = tableBO.getJavaName(i);
                     result.put(name, row[i]);
                 }
-                //这里的数据存放在map中
-                Object entity = BinLogUtils.decode(tableBO.getClazz(), result);
-                resetValueToEntity(entity,result);
+                Object entity = null;
+                FieldValueHandle fieldValueHandle = holder.getFieldValueHandle(key);
+                if (fieldValueHandle != null) {
+                    entity = fieldValueHandle.handle(result);
+                } else {
+                    entity = BinLogUtils.decode(tableBO.getClazz(), result);
+                    resetValueToEntity(entity, result);
+                }
                 for (IListener listener : listeners) {
                     listener.saveEvent(entity);
                 }
@@ -89,8 +95,14 @@ public class CompositeListener implements BinaryLogClient.EventListener {
                 String name = tableBO.getJavaName(i);
                 result.put(name, value[i]);
             }
-            Object entity = BinLogUtils.decode(tableBO.getClazz(), result);
-            resetValueToEntity(entity,result);
+            Object entity = null;
+            FieldValueHandle fieldValueHandle = holder.getFieldValueHandle(key);
+            if (fieldValueHandle != null) {
+                entity = fieldValueHandle.handle(result);
+            } else {
+                entity = BinLogUtils.decode(tableBO.getClazz(), result);
+                resetValueToEntity(entity, result);
+            }
             for (IListener listener : listeners) {
                 listener.updateEvent(entity);
             }
@@ -115,7 +127,9 @@ public class CompositeListener implements BinaryLogClient.EventListener {
     }
 
     //埋点方法，用于提供用户实现自定义设置,如果想用继承这个类并实现这个方法
-    public  void resetValueToEntity(Object entity,Map<String,Serializable> values){
+    public void resetValueToEntity(Object entity, Map<String, Serializable> values) {
 
     }
+
+
 }
