@@ -11,6 +11,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import java.io.Serializable;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -46,8 +47,8 @@ public class CompositeListener implements BinaryLogClient.EventListener {
 
     @SuppressWarnings("all")
     private void handleSave(String key, WriteRowsEventData data) {
-        IListener listener = holder.getListenerByKey(key);
-        if (listener == null) {
+        List<IListener> listeners = holder.getListenerByKey(key);
+        if (listeners == null || listeners.size() == 0) {
             log.debug("not find save handle by key :" + key);
             return;
         }
@@ -63,7 +64,9 @@ public class CompositeListener implements BinaryLogClient.EventListener {
                 }
                 //这里的数据存放在map中
                 Object entity = BinLogUtils.decode(tableBO.getClazz(), result);
-                listener.saveEvent(entity);
+                for (IListener listener : listeners) {
+                    listener.saveEvent(entity);
+                }
             }
         }
 
@@ -71,8 +74,8 @@ public class CompositeListener implements BinaryLogClient.EventListener {
 
     @SuppressWarnings("all")
     private void handleUpdate(String key, UpdateRowsEventData data) {
-        IListener listener = holder.getListenerByKey(key);
-        if (listener == null) {
+        List<IListener> listeners = holder.getListenerByKey(key);
+        if (listeners == null || listeners.size() == 0) {
             log.debug("not find update handle by key :" + key);
             return;
         }
@@ -87,13 +90,15 @@ public class CompositeListener implements BinaryLogClient.EventListener {
                 result.put(name, value[i]);
             }
             Object entity = BinLogUtils.decode(tableBO.getClazz(), result);
-            listener.updateEvent(entity);
+            for (IListener listener : listeners) {
+                listener.updateEvent(entity);
+            }
         }
     }
 
     private void handleDelete(String key, DeleteRowsEventData data) {
-        IListener listener = holder.getListenerByKey(key);
-        if (listener == null) {
+        List<IListener> listeners = holder.getListenerByKey(key);
+        if (listeners == null || listeners.size() == 0) {
             log.debug("not find delete handle by key :" + key);
             return;
         }
@@ -101,7 +106,9 @@ public class CompositeListener implements BinaryLogClient.EventListener {
         List<Serializable[]> rows = data.getRows();
         if (rows != null) {
             for (Serializable[] row : rows) {
-                listener.deleteEvent(row[0]);
+                for (IListener listener : listeners) {
+                    listener.deleteEvent(row[0]);
+                }
             }
         }
     }

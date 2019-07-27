@@ -19,6 +19,8 @@ import java.lang.reflect.Field;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.HashMap;
+import java.util.LinkedList;
+import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
@@ -33,7 +35,9 @@ import java.util.concurrent.ConcurrentHashMap;
 @Slf4j
 public class TableColumnIdAndNameHolder implements CommandLineRunner {
 
-    private Map<String, IListener> listeners = new ConcurrentHashMap<>(40);
+    private Object listenerLock = new Object();
+
+    private Map<String, LinkedList<IListener>> listeners = new ConcurrentHashMap<>(40);
 
     private Map<String, TableBO> cache = new HashMap<>(40);
 
@@ -65,7 +69,19 @@ public class TableColumnIdAndNameHolder implements CommandLineRunner {
         }
         String key = BinLogUtils.createKey(annotation.schema().toLowerCase(), annotation.table().toLowerCase());
         applyMysqlColumnToJavaColumn(clazz, key);
-        listeners.put(key, iListener);
+        addListeners(key, iListener);
+    }
+
+    private void addListeners(String key, IListener listener) {
+        LinkedList<IListener> iListeners = listeners.get(key);
+        if (iListeners == null) {
+            synchronized (listenerLock) {
+                if (iListeners == null) {
+                    iListeners = new LinkedList<>();
+                }
+            }
+        }
+        iListeners.add(listener);
     }
 
     //回设映射关系
@@ -133,7 +149,7 @@ public class TableColumnIdAndNameHolder implements CommandLineRunner {
         register();
     }
 
-    public IListener getListenerByKey(String key) {
+    public List<IListener> getListenerByKey(String key) {
         return listeners.get(key);
     }
 }
