@@ -1,4 +1,4 @@
-package cn.bucheng.mysqlbinloglistener.listener;
+package cn.bucheng.mysql.listener;
 
 import java.io.Serializable;
 

@@ -1,4 +1,4 @@
-package cn.bucheng.mysqlbinloglistener.binlog;
+package cn.bucheng.mysql.binlog;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;

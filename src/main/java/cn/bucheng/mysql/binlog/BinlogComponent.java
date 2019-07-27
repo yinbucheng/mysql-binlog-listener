@@ -1,4 +1,4 @@
-package cn.bucheng.mysqlbinloglistener.binlog;
+package cn.bucheng.mysql.binlog;
 
 import com.github.shyiko.mysql.binlog.BinaryLogClient;
 import lombok.extern.slf4j.Slf4j;

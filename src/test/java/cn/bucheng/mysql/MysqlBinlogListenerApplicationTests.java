@@ -1,4 +1,4 @@
-package cn.bucheng.mysqlbinloglistener;
+package cn.bucheng.mysql;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;

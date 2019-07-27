@@ -1,4 +1,4 @@
-package cn.bucheng.mysqlbinloglistener.utils;
+package cn.bucheng.mysql.utils;
 
 
 import org.apache.commons.beanutils.BeanUtils;

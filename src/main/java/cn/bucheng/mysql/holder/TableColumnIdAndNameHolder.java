@@ -1,13 +1,13 @@
-package cn.bucheng.mysqlbinloglistener.holder;
+package cn.bucheng.mysql.holder;
 
 
-import cn.bucheng.mysqlbinloglistener.annotation.ColumnName;
-import cn.bucheng.mysqlbinloglistener.annotation.TableName;
-import cn.bucheng.mysqlbinloglistener.aware.BeanFactoryUtils;
-import cn.bucheng.mysqlbinloglistener.entity.TableBO;
-import cn.bucheng.mysqlbinloglistener.handle.FieldValueHandle;
-import cn.bucheng.mysqlbinloglistener.listener.IListener;
-import cn.bucheng.mysqlbinloglistener.utils.BinLogUtils;
+import cn.bucheng.mysql.annotation.ColumnName;
+import cn.bucheng.mysql.annotation.TableName;
+import cn.bucheng.mysql.aware.BeanFactoryUtils;
+import cn.bucheng.mysql.entity.TableBO;
+import cn.bucheng.mysql.handle.FieldValueHandle;
+import cn.bucheng.mysql.listener.IListener;
+import cn.bucheng.mysql.utils.BinLogUtils;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;

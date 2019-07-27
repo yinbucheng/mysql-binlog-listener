@@ -1,4 +1,4 @@
-package cn.bucheng.mysqlbinloglistener.annotation;
+package cn.bucheng.mysql.annotation;
 
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;

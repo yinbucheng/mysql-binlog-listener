@@ -1,10 +1,10 @@
-package cn.bucheng.mysqlbinloglistener.binlog;
+package cn.bucheng.mysql.binlog;
 
-import cn.bucheng.mysqlbinloglistener.entity.TableBO;
-import cn.bucheng.mysqlbinloglistener.handle.FieldValueHandle;
-import cn.bucheng.mysqlbinloglistener.holder.TableColumnIdAndNameHolder;
-import cn.bucheng.mysqlbinloglistener.listener.IListener;
-import cn.bucheng.mysqlbinloglistener.utils.BinLogUtils;
+import cn.bucheng.mysql.entity.TableBO;
+import cn.bucheng.mysql.handle.FieldValueHandle;
+import cn.bucheng.mysql.holder.TableColumnIdAndNameHolder;
+import cn.bucheng.mysql.listener.IListener;
+import cn.bucheng.mysql.utils.BinLogUtils;
 import com.github.shyiko.mysql.binlog.BinaryLogClient;
 import com.github.shyiko.mysql.binlog.event.*;
 import lombok.extern.slf4j.Slf4j;
