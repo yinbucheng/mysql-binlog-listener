@@ -102,6 +102,7 @@ public class TableColumnIdAndNameHolder implements CommandLineRunner {
             synchronized (listenerLock) {
                 if (iListeners == null) {
                     iListeners = new LinkedList<>();
+                    listeners.put(key,iListeners);
                 }
             }
         }
@@ -117,18 +118,17 @@ public class TableColumnIdAndNameHolder implements CommandLineRunner {
             for (Field field : fields) {
                 field.setAccessible(true);
                 ColumnName column = field.getAnnotation(ColumnName.class);
-                if (column == null) {
-                    log.error("miss ColumnName annotation in entity field");
-                    throw new RuntimeException("miss ColumnName annotation in entity field");
-                }
                 String javaColumn = field.getName();
                 String sqlColumn = javaColumn;
-                if (!StringUtils.isEmpty(column.javaColumn())) {
-                    javaColumn = column.javaColumn();
+                if (column != null) {
+                    if (!StringUtils.isEmpty(column.javaColumn())) {
+                        javaColumn = column.javaColumn();
+                    }
+                    if (!StringUtils.isEmpty(column.sqlColumn())) {
+                        sqlColumn = column.sqlColumn();
+                    }
                 }
-                if (!StringUtils.isEmpty(column.sqlColumn())) {
-                    sqlColumn = column.sqlColumn();
-                }
+
                 tableBO.addJavaTypeName(sqlColumn, javaColumn);
             }
         }

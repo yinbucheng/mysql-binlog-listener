@@ -8,6 +8,7 @@ import cn.bucheng.mysql.utils.BinLogUtils;
 import com.github.shyiko.mysql.binlog.BinaryLogClient;
 import com.github.shyiko.mysql.binlog.event.*;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.logging.log4j.util.Strings;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -35,13 +36,16 @@ public class CompositeListener implements BinaryLogClient.EventListener {
             dbName = mapData.getDatabase().toLowerCase();
             tableName = mapData.getTable().toLowerCase();
         }
+        if (Strings.isBlank(dbName) || Strings.isBlank(tableName)) {
+            return;
+        }
         String key = BinLogUtils.createKey(dbName.toLowerCase(), tableName.toLowerCase());
         if (eventType == EventType.EXT_WRITE_ROWS) {
             handleSave(key, event.getData());
         } else if (eventType == EventType.EXT_DELETE_ROWS) {
-            handleUpdate(key, event.getData());
-        } else if (eventType == EventType.EXT_UPDATE_ROWS) {
             handleDelete(key, event.getData());
+        } else if (eventType == EventType.EXT_UPDATE_ROWS) {
+            handleUpdate(key, event.getData());
         }
     }
 
