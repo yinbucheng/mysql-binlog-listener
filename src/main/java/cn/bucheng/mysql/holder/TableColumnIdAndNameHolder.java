@@ -4,15 +4,15 @@ package cn.bucheng.mysql.holder;
 import cn.bucheng.mysql.annotation.ColumnName;
 import cn.bucheng.mysql.annotation.TableName;
 import cn.bucheng.mysql.aware.BeanFactoryUtils;
+import cn.bucheng.mysql.callback.MysqlRowMapper;
 import cn.bucheng.mysql.entity.TableBO;
 import cn.bucheng.mysql.handle.FieldValueHandle;
 import cn.bucheng.mysql.listener.IListener;
 import cn.bucheng.mysql.utils.BinLogUtils;
+import cn.bucheng.mysql.utils.JDBCUtils;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.CommandLineRunner;
-import org.springframework.jdbc.core.JdbcTemplate;
-import org.springframework.jdbc.core.RowMapper;
 import org.springframework.stereotype.Component;
 import org.springframework.util.StringUtils;
 
@@ -47,8 +47,15 @@ public class TableColumnIdAndNameHolder implements CommandLineRunner {
 
     public static final String SQL = "select table_schema, table_name, column_name, ordinal_position from information_schema.columns";
 
-    @Autowired
-    private JdbcTemplate jdbcTemplate;
+
+    @Value("${mysql.binlog.host}")
+    private String host;
+    @Value("${mysql.binlog.port}")
+    private Integer port;
+    @Value("${mysql.binlog.username}")
+    private String username;
+    @Value("${mysql.binlog.password}")
+    private String password;
 
 
     private void register() {
@@ -143,10 +150,9 @@ public class TableColumnIdAndNameHolder implements CommandLineRunner {
     private void initTableIdAndColumn() {
         log.info("begin load table column id and name from mysql");
         //完成id到名称初始化
-        jdbcTemplate.query(SQL, new RowMapper<Object>() {
-
+        JDBCUtils.mysqlQuery("jdbc:mysql://" + host + ":" + port + "/mysql?serverTimezone=GMT%2B8", username, password, SQL, new MysqlRowMapper() {
             @Override
-            public Object mapRow(ResultSet rs, int i) throws SQLException {
+            public void mapRow(ResultSet rs) throws SQLException {
                 int position = rs.getInt("ordinal_position");
                 String tableName = rs.getString("table_name").toLowerCase();
                 String dbName = rs.getString("table_schema").toLowerCase();
@@ -160,7 +166,6 @@ public class TableColumnIdAndNameHolder implements CommandLineRunner {
                     cache.put(key, tableBO);
                 }
                 tableBO.addColumnIdName(position - 1, columnName);
-                return null;
             }
         });
     }
