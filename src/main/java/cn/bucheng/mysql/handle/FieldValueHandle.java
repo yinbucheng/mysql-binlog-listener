@@ -3,10 +3,10 @@ package cn.bucheng.mysql.handle;
 import java.io.Serializable;
 import java.util.Map;
 
-public interface FieldValueHandle {
+public interface FieldValueHandle<T> {
     //需要处理的类型
-    <T> Class<T> getClassType();
+    Class getClassType();
 
     //将map中的属性映射为对象
-    <T> T handle(Map<String, Serializable> values);
+    T handle(Map<String, Serializable> values);
 }
