@@ -121,12 +121,15 @@ public class TableColumnIdAndNameHolder implements CommandLineRunner {
                     log.error("miss ColumnName annotation in entity field");
                     throw new RuntimeException("miss ColumnName annotation in entity field");
                 }
-                String sqlColumn = column.sqlColumn();
                 String javaColumn = field.getName();
+                String sqlColumn = javaColumn;
                 if (!StringUtils.isEmpty(column.javaColumn())) {
                     javaColumn = column.javaColumn();
                 }
-                tableBO.addJaveTypeName(sqlColumn, javaColumn);
+                if (!StringUtils.isEmpty(column.sqlColumn())) {
+                    sqlColumn = column.sqlColumn();
+                }
+                tableBO.addJavaTypeName(sqlColumn, javaColumn);
             }
         }
         log.info("finish apply " + key + " sqlColumn to javaColumn");
@@ -173,7 +176,7 @@ public class TableColumnIdAndNameHolder implements CommandLineRunner {
         return listeners.get(key);
     }
 
-    public FieldValueHandle getFieldValueHandle(String key){
+    public FieldValueHandle getFieldValueHandle(String key) {
         return handleMap.get(key);
     }
 }

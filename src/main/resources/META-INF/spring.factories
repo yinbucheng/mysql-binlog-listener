@@ -1,3 +1,5 @@
 org.springframework.boot.autoconfigure.EnableAutoConfiguration=cn.bucheng.mysqlbinloglistener.binlog.BinlogComponent,\
   cn.bucheng.mysqlbinloglistener.holder.TableColumnIdAndNameHolder,\
-  cn.bucheng.mysqlbinloglistener.aware.BeanFactoryUtils
+  cn.bucheng.mysqlbinloglistener.aware.BeanFactoryUtils,\
+  cn.bucheng.mysqlbinloglistener.binlog.BinLogConfig,\
+  cn.bucheng.mysqlbinloglistener.binlog.CompositeListener

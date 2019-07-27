@@ -40,7 +40,7 @@ public class TableBO {
         return columnTypeNameMaps.get(columnName);
     }
 
-    public void addJaveTypeName(String columnName, String typeName) {
+    public void addJavaTypeName(String columnName, String typeName) {
         columnTypeNameMaps.put(columnName, typeName);
     }
 
