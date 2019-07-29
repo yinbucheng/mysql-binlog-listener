@@ -72,7 +72,6 @@ public class CompositeListener implements BinaryLogClient.EventListener {
                     entity = fieldValueHandle.handle(result);
                 } else {
                     entity = BinLogUtils.decode(tableBO.getClazz(), result);
-                    resetValueToEntity(entity, result);
                 }
                 for (IListener listener : listeners) {
                     listener.saveEvent(entity);
@@ -105,7 +104,6 @@ public class CompositeListener implements BinaryLogClient.EventListener {
                 entity = fieldValueHandle.handle(result);
             } else {
                 entity = BinLogUtils.decode(tableBO.getClazz(), result);
-                resetValueToEntity(entity, result);
             }
             for (IListener listener : listeners) {
                 listener.updateEvent(entity);
@@ -128,11 +126,6 @@ public class CompositeListener implements BinaryLogClient.EventListener {
                 }
             }
         }
-    }
-
-    //埋点方法，用于提供用户实现自定义设置,如果想用继承这个类并实现这个方法
-    public void resetValueToEntity(Object entity, Map<String, Serializable> values) {
-
     }
 
 
