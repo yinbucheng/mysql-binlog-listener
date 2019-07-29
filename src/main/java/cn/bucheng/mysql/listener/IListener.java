@@ -14,4 +14,5 @@ public interface IListener<T> {
 
     //删除事件
     void deleteEvent(Serializable id);
+
 }

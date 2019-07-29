@@ -17,6 +17,6 @@ public class BinLogConfig {
     private Integer port;
     private String username;
     private String password;
-    private String binlogFile;
-    private Long binlogPosition;
+    private String file;
+    private Long position;
 }

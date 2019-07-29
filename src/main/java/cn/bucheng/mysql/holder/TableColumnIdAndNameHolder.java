@@ -13,6 +13,7 @@ import cn.bucheng.mysql.utils.JDBCUtils;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.CommandLineRunner;
+import org.springframework.core.annotation.Order;
 import org.springframework.stereotype.Component;
 import org.springframework.util.StringUtils;
 
@@ -35,6 +36,7 @@ import java.util.concurrent.ConcurrentHashMap;
  */
 @Component
 @Slf4j
+@Order(-Integer.MAX_VALUE)
 public class TableColumnIdAndNameHolder implements CommandLineRunner {
 
     private Object listenerLock = new Object();
