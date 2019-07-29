@@ -1,8 +1,10 @@
 package cn.bucheng.mysql.binlog;
 
+import cn.bucheng.mysql.aware.BeanFactoryUtils;
 import cn.bucheng.mysql.entity.TableBO;
 import cn.bucheng.mysql.handle.FieldValueHandle;
 import cn.bucheng.mysql.holder.TableColumnIdAndNameHolder;
+import cn.bucheng.mysql.callback.CommitPositionCallback;
 import cn.bucheng.mysql.listener.IListener;
 import cn.bucheng.mysql.utils.BinLogUtils;
 import com.github.shyiko.mysql.binlog.BinaryLogClient;
@@ -39,6 +41,10 @@ public class CompositeListener implements BinaryLogClient.EventListener {
         if (Strings.isBlank(dbName) || Strings.isBlank(tableName)) {
             return;
         }
+        if (eventType == EventType.XID) {
+            handleCommitPosition(event.getHeader());
+            return;
+        }
         String key = BinLogUtils.createKey(dbName.toLowerCase(), tableName.toLowerCase());
         if (eventType == EventType.EXT_WRITE_ROWS) {
             handleSave(key, event.getData());
@@ -46,6 +52,16 @@ public class CompositeListener implements BinaryLogClient.EventListener {
             handleDelete(key, event.getData());
         } else if (eventType == EventType.EXT_UPDATE_ROWS) {
             handleUpdate(key, event.getData());
+        }
+    }
+
+    //这里用于处理事务提交一般结合启动加载position实现异常恢复
+    private void handleCommitPosition(EventHeaderV4 headerV4) {
+        long position = headerV4.getNextPosition();
+        String[] beanNamesForType = BeanFactoryUtils.getBeanFactory().getBeanNamesForType(CommitPositionCallback.class);
+        if (beanNamesForType != null && beanNamesForType.length > 0) {
+            CommitPositionCallback bean = BeanFactoryUtils.getBeanFactory().getBean(CommitPositionCallback.class);
+            bean.handleCommitPosition(position);
         }
     }
 
@@ -72,7 +88,6 @@ public class CompositeListener implements BinaryLogClient.EventListener {
                     entity = fieldValueHandle.handle(result);
                 } else {
                     entity = BinLogUtils.decode(tableBO.getClazz(), result);
-                    resetValueToEntity(entity, result);
                 }
                 for (IListener listener : listeners) {
                     listener.saveEvent(entity);
@@ -105,7 +120,6 @@ public class CompositeListener implements BinaryLogClient.EventListener {
                 entity = fieldValueHandle.handle(result);
             } else {
                 entity = BinLogUtils.decode(tableBO.getClazz(), result);
-                resetValueToEntity(entity, result);
             }
             for (IListener listener : listeners) {
                 listener.updateEvent(entity);
@@ -128,11 +142,6 @@ public class CompositeListener implements BinaryLogClient.EventListener {
                 }
             }
         }
-    }
-
-    //埋点方法，用于提供用户实现自定义设置,如果想用继承这个类并实现这个方法
-    public void resetValueToEntity(Object entity, Map<String, Serializable> values) {
-
     }
 
 

@@ -1,7 +1,7 @@
 package cn.bucheng.mysql.binlog;
 
 import cn.bucheng.mysql.aware.BeanFactoryUtils;
-import cn.bucheng.mysql.callback.BinlogConfigMapper;
+import cn.bucheng.mysql.callback.BinlogConfigCallback;
 import com.github.shyiko.mysql.binlog.BinaryLogClient;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -38,14 +38,12 @@ public class BinlogComponent {
                     config.getPassword()
             );
             retryRestConfig(config);
-            if (!StringUtils.isEmpty(config.getBinlogFile())) {
-                log.info("---------set binlog file and position-----------");
-                client.setBinlogFilename(config.getBinlogFile());
-                client.setBinlogPosition(config.getBinlogPosition());
+            if (!StringUtils.isEmpty(config.getFile())) {
+                client.setBinlogFilename(config.getFile());
             }
 
-            if (config.getBinlogPosition() != null && !config.getBinlogPosition().equals(-1L)) {
-                client.setBinlogPosition(config.getBinlogPosition());
+            if (config.getPosition() != null && !config.getPosition().equals(-1L)) {
+                client.setBinlogPosition(config.getPosition());
             }
             client.registerEventListener(listener);
 
@@ -63,10 +61,10 @@ public class BinlogComponent {
     }
 
     private void retryRestConfig(BinLogConfig binLogConfig) {
-        String[] beanNamesForType = BeanFactoryUtils.getBeanFactory().getBeanNamesForType(BinlogConfigMapper.class);
+        String[] beanNamesForType = BeanFactoryUtils.getBeanFactory().getBeanNamesForType(BinlogConfigCallback.class);
         if (beanNamesForType != null && beanNamesForType.length != 0) {
-            BinlogConfigMapper binlogConfigMapper = BeanFactoryUtils.getBeanFactory().getBean(BinlogConfigMapper.class);
-            binlogConfigMapper.configMapper(binLogConfig);
+            BinlogConfigCallback binlogConfigMapper = BeanFactoryUtils.getBeanFactory().getBean(BinlogConfigCallback.class);
+            binlogConfigMapper.configCallback(binLogConfig);
         }
     }
 
