@@ -5,6 +5,8 @@ import cn.bucheng.mysql.callback.BinlogConfigCallback;
 import com.github.shyiko.mysql.binlog.BinaryLogClient;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.CommandLineRunner;
+import org.springframework.core.annotation.Order;
 import org.springframework.stereotype.Component;
 import org.springframework.util.StringUtils;
 
@@ -19,7 +21,8 @@ import java.io.IOException;
  */
 @Component
 @Slf4j
-public class BinlogComponent {
+@Order(Integer.MAX_VALUE)
+public class BinlogComponent implements CommandLineRunner {
 
     private BinaryLogClient client;
     @Autowired
@@ -27,7 +30,7 @@ public class BinlogComponent {
     @Autowired
     private CompositeListener listener;
 
-    @PostConstruct
+
     public void init() {
         log.info("==========start binlog client==========");
         Thread thread = new Thread(() -> {
@@ -76,5 +79,10 @@ public class BinlogComponent {
         } catch (IOException e) {
             e.printStackTrace();
         }
+    }
+
+    @Override
+    public void run(String... args) throws Exception {
+        init();
     }
 }
