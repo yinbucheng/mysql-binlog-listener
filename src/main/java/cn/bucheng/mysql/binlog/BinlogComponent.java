@@ -1,7 +1,7 @@
 package cn.bucheng.mysql.binlog;
 
 import cn.bucheng.mysql.aware.BeanFactoryUtils;
-import cn.bucheng.mysql.callback.BinlogConfigCallback;
+import cn.bucheng.mysql.callback.BinLogConfigHook;
 import com.github.shyiko.mysql.binlog.BinaryLogClient;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -10,7 +10,6 @@ import org.springframework.core.annotation.Order;
 import org.springframework.stereotype.Component;
 import org.springframework.util.StringUtils;
 
-import javax.annotation.PostConstruct;
 import javax.annotation.PreDestroy;
 import java.io.IOException;
 
@@ -64,10 +63,10 @@ public class BinlogComponent implements CommandLineRunner {
     }
 
     private void retryRestConfig(BinLogConfig binLogConfig) {
-        String[] beanNamesForType = BeanFactoryUtils.getBeanFactory().getBeanNamesForType(BinlogConfigCallback.class);
+        String[] beanNamesForType = BeanFactoryUtils.getBeanFactory().getBeanNamesForType(BinLogConfigHook.class);
         if (beanNamesForType != null && beanNamesForType.length != 0) {
-            BinlogConfigCallback binlogConfigMapper = BeanFactoryUtils.getBeanFactory().getBean(BinlogConfigCallback.class);
-            binlogConfigMapper.configCallback(binLogConfig);
+            BinLogConfigHook binlogConfigMapper = BeanFactoryUtils.getBeanFactory().getBean(BinLogConfigHook.class);
+            binlogConfigMapper.configReset(binLogConfig);
         }
     }
 
