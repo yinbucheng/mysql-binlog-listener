@@ -119,7 +119,7 @@ public class BookHandle implements FieldValueHandle<BookEntity> {
 public class GlobalBinLogFileHandle implements IBinLogFileListener {
     @Override
     public void handleBinLogFile(String fileName) {
-        //这里可以用数据记录下来文件，并且将偏移量在库中默认保存为0
+        //这里可以redis记录下来文件，并且将偏移量默认保存为0
         log.info("----binLogFile:{}", fileName);
     }
 }
@@ -132,7 +132,7 @@ public class GlobalCommitPositionHandle implements BinLogCommitPosition {
 
     @Override
     public void commitBinLogPosition(long position) {
-        //这里可以用数据记录下来
+        //这里可以用redis记录下来
         log.info(" commit position:{}", position);
     }
 }
@@ -145,11 +145,13 @@ public class GlobalConfigHandle implements BinlogConfigCallback {
 
     @Override
     public void configCallback(BinLogConfig config) {
-       //这里可以编写从数据库中获取加载文件名称及偏移量调用下面进行回设
+       //这里可以编写从redis中获取加载文件名称及偏移量调用下面进行回设
         config.setPosition(0L);
         config.setFile("xxxxx");
     }
 }
+
+4.注意点，不要使用监听的库存放上面记录，不然会出现死循环，也就binlog不断在变化
 ```
 
 
