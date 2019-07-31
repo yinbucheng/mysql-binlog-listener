@@ -21,7 +21,7 @@ import java.io.IOException;
 @Component
 @Slf4j
 @Order(Integer.MAX_VALUE)
-public class BinlogComponent implements CommandLineRunner {
+public class  BinlogComponent implements CommandLineRunner {
 
     private BinaryLogClient client;
     @Autowired

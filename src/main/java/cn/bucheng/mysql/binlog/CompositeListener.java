@@ -4,7 +4,7 @@ import cn.bucheng.mysql.aware.BeanFactoryUtils;
 import cn.bucheng.mysql.entity.TableBO;
 import cn.bucheng.mysql.handle.FieldValueHandle;
 import cn.bucheng.mysql.holder.TableColumnIdAndNameHolder;
-import cn.bucheng.mysql.callback.CommitPositionCallback;
+import cn.bucheng.mysql.callback.BinLogCommitPosition;
 import cn.bucheng.mysql.listener.IListener;
 import cn.bucheng.mysql.utils.BinLogUtils;
 import com.github.shyiko.mysql.binlog.BinaryLogClient;
@@ -58,10 +58,10 @@ public class CompositeListener implements BinaryLogClient.EventListener {
     //这里用于处理事务提交一般结合启动加载position实现异常恢复
     private void handleCommitPosition(EventHeaderV4 headerV4) {
         long position = headerV4.getNextPosition();
-        String[] beanNamesForType = BeanFactoryUtils.getBeanFactory().getBeanNamesForType(CommitPositionCallback.class);
+        String[] beanNamesForType = BeanFactoryUtils.getBeanFactory().getBeanNamesForType(BinLogCommitPosition.class);
         if (beanNamesForType != null && beanNamesForType.length > 0) {
-            CommitPositionCallback bean = BeanFactoryUtils.getBeanFactory().getBean(CommitPositionCallback.class);
-            bean.handleCommitPosition(position);
+            BinLogCommitPosition bean = BeanFactoryUtils.getBeanFactory().getBean(BinLogCommitPosition.class);
+            bean.commitBinLogPosition(position);
         }
     }
 

@@ -1,5 +1,22 @@
 # mysql binlog监听器
 
+## 前置操作
+
+```
+1.查看mysql是否开启binlog
+show variables like 'log_bin';
+
+2.查看是否使用row格式的binlog
+show variables like 'binlog_format';
+
+3.如果以上都不是请修改mysql的配置文件添加或者修改如下内容
+#配置binlog存放路径
+log-bin=E://mysql//binlog//mysql-bin
+#bin日志的格式 Mixed/row
+binlog-format=row
+
+4.重启mysql再次执行1.2步查看是否生效
+```
 
 ## 使用
 

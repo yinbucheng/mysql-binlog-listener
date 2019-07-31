@@ -7,6 +7,6 @@ package cn.bucheng.mysql.callback;
  * @modified By：
  * @version:
  */
-public interface CommitPositionCallback {
-    void handleCommitPosition(long position);
+public interface BinLogCommitPosition {
+    void commitBinLogPosition(long position);
 }
