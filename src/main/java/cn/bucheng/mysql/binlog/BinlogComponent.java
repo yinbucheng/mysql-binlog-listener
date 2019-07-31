@@ -32,7 +32,6 @@ public class BinlogComponent implements CommandLineRunner {
 
 
     public void init() {
-        log.info("==========start binlog client==========");
         Thread thread = new Thread(() -> {
             client = new BinaryLogClient(
                     config.getHost(),
@@ -56,12 +55,14 @@ public class BinlogComponent implements CommandLineRunner {
                 log.info("connecting to mysql done");
             } catch (IOException ex) {
                 ex.printStackTrace();
+                log.error(ex.toString() + ex.getMessage());
             }
         });
 
         thread.setName("binlog-listener-thread");
         thread.setDaemon(true);
         thread.start();
+        log.info("start binlog listener client ");
     }
 
     private void retryRestConfig(BinLogConfig binLogConfig) {
