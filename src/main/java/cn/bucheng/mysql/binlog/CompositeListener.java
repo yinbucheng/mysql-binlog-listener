@@ -1,10 +1,11 @@
 package cn.bucheng.mysql.binlog;
 
 import cn.bucheng.mysql.aware.BeanFactoryUtils;
+import cn.bucheng.mysql.callback.BinLogCommitPosition;
 import cn.bucheng.mysql.entity.TableBO;
 import cn.bucheng.mysql.handle.FieldValueHandle;
 import cn.bucheng.mysql.holder.TableColumnIdAndNameHolder;
-import cn.bucheng.mysql.callback.BinLogCommitPosition;
+import cn.bucheng.mysql.listener.IBinLogFileListener;
 import cn.bucheng.mysql.listener.IListener;
 import cn.bucheng.mysql.utils.BinLogUtils;
 import com.github.shyiko.mysql.binlog.BinaryLogClient;
@@ -33,10 +34,19 @@ public class CompositeListener implements BinaryLogClient.EventListener {
     @Override
     public void onEvent(Event event) {
         EventType eventType = event.getHeader().getEventType();
+        if (eventType == EventType.ROTATE) {
+            RotateEventData data = event.getData();
+            IBinLogFileListener binLogFileListener = getBinLogFileListener();
+            if (binLogFileListener != null) {
+                binLogFileListener.handleBinLogFile(data.getBinlogFilename());
+            }
+            return;
+        }
         if (eventType == EventType.TABLE_MAP) {
             TableMapEventData mapData = event.getData();
             dbName = mapData.getDatabase().toLowerCase();
             tableName = mapData.getTable().toLowerCase();
+            return;
         }
         if (Strings.isBlank(dbName) || Strings.isBlank(tableName)) {
             return;
@@ -63,6 +73,14 @@ public class CompositeListener implements BinaryLogClient.EventListener {
             BinLogCommitPosition bean = BeanFactoryUtils.getBeanFactory().getBean(BinLogCommitPosition.class);
             bean.commitBinLogPosition(position);
         }
+    }
+
+    private IBinLogFileListener getBinLogFileListener() {
+        String[] beanNamesForType = BeanFactoryUtils.getBeanFactory().getBeanNamesForType(IBinLogFileListener.class);
+        if (beanNamesForType == null || beanNamesForType.length == 0) {
+            return null;
+        }
+        return BeanFactoryUtils.getBeanFactory().getBean(IBinLogFileListener.class);
     }
 
     @SuppressWarnings("all")
