@@ -38,7 +38,9 @@ public class CompositeListener implements BinaryLogClient.EventListener {
             RotateEventData data = event.getData();
             IBinLogFileListener binLogFileListener = getBinLogFileListener();
             if (binLogFileListener != null) {
-                binLogFileListener.handleBinLogFile(data.getBinlogFilename());
+                EventHeaderV4 headerV4 = event.getHeader();
+                long position = headerV4.getNextPosition();
+                binLogFileListener.handleBinLogFile(data.getBinlogFilename(), position);
             }
             return;
         }
