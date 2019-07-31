@@ -117,10 +117,14 @@ public class BookHandle implements FieldValueHandle<BookEntity> {
 @Component
 @Slf4j
 public class GlobalBinLogFileHandle implements IBinLogFileListener {
+    @Autowired
+    private RedisTemplate<String, String> redisTemplate;
+
     @Override
-    public void handleBinLogFile(String fileName) {
-        //这里可以redis记录下来文件，并且将偏移量默认保存为0
-        log.info("----binLogFile:{}", fileName);
+    public void handleBinLogFile(String fileName, long position) {
+        redisTemplate.opsForHash().put("es-boot-binLog", "filename", fileName);
+        redisTemplate.opsForHash().put("es-boot-binLog", "position", position + "");
+        log.info("save binLogFile:{} position:{}",fileName,position);
     }
 }
 
@@ -128,26 +132,34 @@ public class GlobalBinLogFileHandle implements IBinLogFileListener {
 @Component
 @Slf4j
 public class GlobalCommitPositionHandle implements BinLogCommitPosition {
+    @Autowired
+    private RedisTemplate<String, String> redisTemplate;
 
 
     @Override
     public void commitBinLogPosition(long position) {
-        //这里可以用redis记录下来
-        log.info(" commit position:{}", position);
+        log.info("update position to redis position:{}", position);
+        redisTemplate.opsForHash().put("es-boot-binLog", "position", position + "");
     }
 }
 
 3.服务异常重启时恢复上次加载位置
 @Slf4j
 @Component
-public class GlobalConfigHandle implements BinlogConfigCallback {
+public class GlobalConfigHandle implements BinLogConfigHook {
+    @Autowired
+    private RedisTemplate<String, String> redisTemplate;
 
 
     @Override
-    public void configCallback(BinLogConfig config) {
-       //这里可以编写从redis中获取加载文件名称及偏移量调用下面进行回设
-        config.setPosition(0L);
-        config.setFile("xxxxx");
+    public void configReset(BinLogConfig config) {
+        Object filename = redisTemplate.opsForHash().get("es-boot-binLog", "filename");
+        Object position = redisTemplate.opsForHash().get("es-boot-binLog", "position");
+        if (filename != null && !filename.equals("") && position != null && !"".equals(position + "")) {
+            log.info("begin load filename:{}, position:{}", filename, position);
+            config.setFile(filename + "");
+            config.setPosition(Long.parseLong(position + ""));
+        }
     }
 }
 
