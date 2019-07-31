@@ -12,6 +12,7 @@ import org.springframework.util.StringUtils;
 
 import javax.annotation.PreDestroy;
 import java.io.IOException;
+import java.util.concurrent.Executor;
 
 /**
  * @author buchengyin
@@ -21,7 +22,7 @@ import java.io.IOException;
 @Component
 @Slf4j
 @Order(Integer.MAX_VALUE)
-public class  BinlogComponent implements CommandLineRunner {
+public class BinlogComponent implements CommandLineRunner {
 
     private BinaryLogClient client;
     @Autowired
@@ -59,6 +60,7 @@ public class  BinlogComponent implements CommandLineRunner {
         });
 
         thread.setName("binlog-listener-thread");
+        thread.setDaemon(true);
         thread.start();
     }
 
