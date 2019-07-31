@@ -113,7 +113,7 @@ public class BookHandle implements FieldValueHandle<BookEntity> {
 ## 高级用法
 
 ```
-1.记录binlog加载的文件
+1.记录binlog加载文件并初始化偏移量为0
 @Component
 @Slf4j
 public class GlobalBinLogFileHandle implements IBinLogFileListener {
