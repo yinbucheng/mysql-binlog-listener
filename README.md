@@ -111,6 +111,7 @@ public class BookHandle implements FieldValueHandle<BookEntity> {
 ```
 
 ## 高级用法
+
 ```
 1.记录binlog加载的文件
 @Component
@@ -118,7 +119,7 @@ public class BookHandle implements FieldValueHandle<BookEntity> {
 public class GlobalBinLogFileHandle implements IBinLogFileListener {
     @Override
     public void handleBinLogFile(String fileName) {
-        //这里可以用数据记录下来文件
+        //这里可以用数据记录下来文件，并且将偏移量在库中默认保存为0
         log.info("----binLogFile:{}", fileName);
     }
 }
@@ -136,7 +137,7 @@ public class GlobalCommitPositionHandle implements BinLogCommitPosition {
     }
 }
 
-3.服务异常重启时间恢复上传加载位置
+3.服务异常重启时恢复上次加载位置
 @Slf4j
 @Component
 public class GlobalConfigHandle implements BinlogConfigCallback {
