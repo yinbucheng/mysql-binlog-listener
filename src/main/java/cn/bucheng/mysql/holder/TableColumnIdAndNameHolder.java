@@ -68,6 +68,7 @@ public class TableColumnIdAndNameHolder implements CommandLineRunner {
                 IListener bean = BeanFactoryUtils.getBeanFactory().getBean(beanName, IListener.class);
                 Class<Object> classType = bean.getClassType();
                 registerListener(classType, bean);
+                log.info("finish register listener clazz:{}, listener:{}", classType.getName(), bean.getClass().getName());
             }
         }
 
@@ -100,14 +101,14 @@ public class TableColumnIdAndNameHolder implements CommandLineRunner {
 
 
     private void registerListener(Class clazz, IListener iListener) {
-        log.info("begin apply sqlColumn to javaColumn and register listener");
         String key = getKey(clazz);
         applyMysqlColumnToJavaColumn(clazz, key);
         addListeners(key, iListener);
     }
 
 
-    private void addListeners(String key, IListener listener) {
+    private void
+    addListeners(String key, IListener listener) {
         LinkedList<IListener> iListeners = listeners.get(key);
         if (iListeners == null) {
             synchronized (listenerLock) {
@@ -146,7 +147,6 @@ public class TableColumnIdAndNameHolder implements CommandLineRunner {
                 tableBO.addJavaTypeName(sqlColumn, javaColumn);
             }
         }
-        log.info("finish apply " + key + " sqlColumn to javaColumn");
     }
 
     private String javaFieldName2SqlColumn(String fieldName) {
@@ -155,11 +155,11 @@ public class TableColumnIdAndNameHolder implements CommandLineRunner {
         }
         StringBuilder sb = new StringBuilder();
         char[] chars = fieldName.toCharArray();
-        for(char ch:chars){
-            if(ch>='A'&&ch<='Z'){
+        for (char ch : chars) {
+            if (ch >= 'A' && ch <= 'Z') {
                 sb.append("_");
-                sb.append((char)(ch+32));
-            }else{
+                sb.append((char) (ch + 32));
+            } else {
                 sb.append(ch);
             }
         }
