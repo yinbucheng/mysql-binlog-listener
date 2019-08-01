@@ -25,7 +25,7 @@ binlog-format=row
 
 2.引入下面包
 <dependency>
-      <groupId>cn.bucheng</groupId>
+      <groupId>cn.intellif</groupId>
       <artifactId>spring-boot-starter-mysql-binlog</artifactId>
       <version>0.0.1-SNAPSHOT</version>
 </dependency>
