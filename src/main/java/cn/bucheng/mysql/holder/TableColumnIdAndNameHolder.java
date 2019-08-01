@@ -11,6 +11,7 @@ import cn.bucheng.mysql.listener.IListener;
 import cn.bucheng.mysql.utils.BinLogUtils;
 import cn.bucheng.mysql.utils.JDBCUtils;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.logging.log4j.util.Strings;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.core.annotation.Order;
@@ -132,7 +133,7 @@ public class TableColumnIdAndNameHolder implements CommandLineRunner {
                 }
                 ColumnName column = field.getAnnotation(ColumnName.class);
                 String javaColumn = field.getName();
-                String sqlColumn = javaColumn;
+                String sqlColumn = javaFieldName2SqlColumn(javaColumn);
                 if (column != null) {
                     if (!StringUtils.isEmpty(column.javaColumn())) {
                         javaColumn = column.javaColumn();
@@ -146,6 +147,23 @@ public class TableColumnIdAndNameHolder implements CommandLineRunner {
             }
         }
         log.info("finish apply " + key + " sqlColumn to javaColumn");
+    }
+
+    private String javaFieldName2SqlColumn(String fieldName) {
+        if (Strings.isBlank(fieldName)) {
+            return "";
+        }
+        StringBuilder sb = new StringBuilder();
+        char[] chars = fieldName.toCharArray();
+        for(char ch:chars){
+            if(ch>='A'&&ch<='Z'){
+                sb.append("_");
+                sb.append((char)(ch+32));
+            }else{
+                sb.append(ch);
+            }
+        }
+        return sb.toString();
     }
 
 
