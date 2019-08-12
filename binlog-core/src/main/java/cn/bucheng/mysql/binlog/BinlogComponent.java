@@ -12,7 +12,6 @@ import org.springframework.util.StringUtils;
 
 import javax.annotation.PreDestroy;
 import java.io.IOException;
-import java.util.concurrent.Executor;
 
 /**
  * @author buchengyin
@@ -50,9 +49,9 @@ public class BinlogComponent implements CommandLineRunner {
             client.registerEventListener(listener);
 
             try {
-                log.info("connecting to mysql start");
+                log.info("connecting to cn.bucheng.mysql start");
                 client.connect();
-                log.info("connecting to mysql done");
+                log.info("connecting to cn.bucheng.mysql done");
             } catch (IOException ex) {
                 ex.printStackTrace();
                 log.error(ex.toString() + ex.getMessage());

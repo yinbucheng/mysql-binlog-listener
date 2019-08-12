@@ -102,13 +102,24 @@ public class TableColumnIdAndNameHolder implements CommandLineRunner {
 
     private void registerListener(Class clazz, IListener iListener) {
         String key = getKey(clazz);
+        if (!checkExist(key)) {
+            return;
+        }
         applyMysqlColumnToJavaColumn(clazz, key);
         addListeners(key, iListener);
     }
 
+    private boolean checkExist(String key) {
+        TableBO tableBO = cache.get(key);
+        if (tableBO == null) {
+            log.info("{} not register ,because not find mysql record", key);
+            return false;
+        }
+        return true;
+    }
 
-    private void
-    addListeners(String key, IListener listener) {
+
+    private void addListeners(String key, IListener listener) {
         LinkedList<IListener> iListeners = listeners.get(key);
         if (iListeners == null) {
             synchronized (listenerLock) {

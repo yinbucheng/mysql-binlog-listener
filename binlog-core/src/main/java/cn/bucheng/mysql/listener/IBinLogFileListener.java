@@ -8,5 +8,5 @@ package cn.bucheng.mysql.listener;
  * @version:
  */
 public interface IBinLogFileListener {
-    void handleBinLogFile(String fileName,long position);
+    void handleBinLogFile(String fileName, long position);
 }

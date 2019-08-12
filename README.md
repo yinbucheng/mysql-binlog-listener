@@ -1,4 +1,4 @@
-# mysql binlog监听器
+# cn.bucheng.mysql binlog监听器
 
 ## 前置操作
 
@@ -11,7 +11,7 @@ show variables like 'binlog_format';
 
 3.如果以上都不是请修改mysql的配置文件添加或者修改如下内容
 #配置binlog存放路径
-log-bin=E://mysql//binlog//mysql-bin
+log-bin=E://cn.bucheng.mysql//binlog//cn.bucheng.mysql-bin
 #bin日志的格式 Mixed/row
 binlog-format=row
 
@@ -26,16 +26,16 @@ binlog-format=row
 2.引入下面包
 <dependency>
       <groupId>cn.intellif</groupId>
-      <artifactId>spring-boot-starter-mysql-binlog</artifactId>
+      <artifactId>spring-boot-starter-cn.bucheng.mysql-binlog</artifactId>
       <version>0.0.1-SNAPSHOT</version>
 </dependency>
 
 
 3.添加下面配置
-mysql.binlog.host=127.0.0.1
-mysql.binlog.port=3306
-mysql.binlog.username=root
-mysql.binlog.password=123456
+cn.bucheng.mysql.binlog.host=127.0.0.1
+cn.bucheng.mysql.binlog.port=3306
+cn.bucheng.mysql.binlog.username=root
+cn.bucheng.mysql.binlog.password=123456
 
 4.创建需要监听的实体对象
 (目前默认将java字段转数库字段规则：将大写字母小写并在前面添加_ 比如 userName -转变为-> user_name)
@@ -44,7 +44,7 @@ mysql.binlog.password=123456
 @NoArgsConstructor
 @AllArgsConstructor
 @ToString
-@cn.bucheng.mysql.annotation.TableName(schema = "ad_test", table = "ad_book")
+@cn.bucheng.cn.bucheng.mysql.annotation.TableName(schema = "ad_test", table = "ad_book")
 public class BookEntity implements Serializable {
    //如果数据库中列表和表名相同可以不用添加Column注解
     private Long id;
