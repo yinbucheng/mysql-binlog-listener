@@ -21,7 +21,6 @@ public class GlobalConfigHandle implements BinLogConfigHook {
     @Autowired
     private RedisTemplate<String, String> redisTemplate;
 
-
     @Override
     public void configReset(BinLogConfig config) {
         Object filename = redisTemplate.opsForHash().get(BinLogConstant.BINLOG_PREFIX + "es", BinLogConstant.BINLOG_FILE);
