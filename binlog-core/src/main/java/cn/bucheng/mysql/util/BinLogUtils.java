@@ -1,4 +1,4 @@
-package cn.bucheng.mysql.utils;
+package cn.bucheng.mysql.util;
 
 
 import org.apache.commons.beanutils.BeanUtils;

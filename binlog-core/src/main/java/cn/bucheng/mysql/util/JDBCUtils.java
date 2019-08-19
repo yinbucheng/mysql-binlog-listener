@@ -1,4 +1,4 @@
-package cn.bucheng.mysql.utils;
+package cn.bucheng.mysql.util;
 
 import cn.bucheng.mysql.callback.MysqlRowMapper;
 import org.slf4j.Logger;

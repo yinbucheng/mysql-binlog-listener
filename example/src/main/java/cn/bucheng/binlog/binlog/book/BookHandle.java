@@ -1,7 +1,7 @@
 package cn.bucheng.binlog.binlog.book;
 
 import cn.bucheng.mysql.handle.FieldValueHandle;
-import cn.bucheng.mysql.utils.BinLogUtils;
+import cn.bucheng.mysql.util.BinLogUtils;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 

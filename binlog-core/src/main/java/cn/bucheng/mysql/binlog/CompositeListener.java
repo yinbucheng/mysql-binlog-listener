@@ -7,7 +7,7 @@ import cn.bucheng.mysql.handle.FieldValueHandle;
 import cn.bucheng.mysql.holder.TableColumnIdAndNameHolder;
 import cn.bucheng.mysql.listener.IBinLogFileListener;
 import cn.bucheng.mysql.listener.IListener;
-import cn.bucheng.mysql.utils.BinLogUtils;
+import cn.bucheng.mysql.util.BinLogUtils;
 import com.github.shyiko.mysql.binlog.BinaryLogClient;
 import com.github.shyiko.mysql.binlog.event.*;
 import lombok.extern.slf4j.Slf4j;
