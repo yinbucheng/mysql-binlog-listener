@@ -27,8 +27,8 @@ public class BookHandle implements FieldValueHandle<BookEntity> {
         BookEntity entity = BinLogUtils.decode(BookEntity.class, values);
         Serializable content = values.get("content");
         if(content!=null){
-            byte[] datas = (byte[])content;
-            entity.setContent(new String(datas));
+            byte[] contentData = (byte[])content;
+            entity.setContent(new String(contentData));
         }
         return entity;
     }
