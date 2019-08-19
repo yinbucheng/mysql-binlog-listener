@@ -5,7 +5,7 @@ import cn.bucheng.mysql.annotation.ColumnName;
 import cn.bucheng.mysql.annotation.TableName;
 import cn.bucheng.mysql.aware.BeanFactoryUtils;
 import cn.bucheng.mysql.callback.MysqlRowMapper;
-import cn.bucheng.mysql.entity.TableBO;
+import cn.bucheng.mysql.bo.TableBO;
 import cn.bucheng.mysql.handle.FieldValueHandle;
 import cn.bucheng.mysql.listener.IListener;
 import cn.bucheng.mysql.util.BinLogUtils;
@@ -87,8 +87,8 @@ public class TableColumnIdAndNameHolder implements CommandLineRunner {
     private TableName getTableName(Class clazz) {
         TableName annotation = (TableName) clazz.getAnnotation(TableName.class);
         if (annotation == null) {
-            log.error("please mark cn.bucheng.mysql.binloglistener.annotation.TableName annotation to entity");
-            throw new RuntimeException("please mark cn.bucheng.mysql.binloglistener.annotation.TableName annotation to entity");
+            log.error("please mark cn.bucheng.mysql.binloglistener.annotation.TableName annotation to bo");
+            throw new RuntimeException("please mark cn.bucheng.mysql.binloglistener.annotation.TableName annotation to bo");
         }
         return annotation;
     }

@@ -2,7 +2,7 @@ package cn.bucheng.mysql.binlog;
 
 import cn.bucheng.mysql.aware.BeanFactoryUtils;
 import cn.bucheng.mysql.callback.BinLogCommitPosition;
-import cn.bucheng.mysql.entity.TableBO;
+import cn.bucheng.mysql.bo.TableBO;
 import cn.bucheng.mysql.handle.FieldValueHandle;
 import cn.bucheng.mysql.holder.TableColumnIdAndNameHolder;
 import cn.bucheng.mysql.listener.IBinLogFileListener;

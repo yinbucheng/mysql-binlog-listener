@@ -1,4 +1,4 @@
-package cn.bucheng.mysql.entity;
+package cn.bucheng.mysql.bo;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
