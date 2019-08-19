@@ -68,7 +68,7 @@ public class BinlogComponent implements CommandLineRunner {
         String[] beanNamesForType = BeanFactoryUtils.getBeanFactory().getBeanNamesForType(BinLogConfigHook.class);
         if (beanNamesForType != null && beanNamesForType.length != 0) {
             BinLogConfigHook binlogConfigMapper = BeanFactoryUtils.getBeanFactory().getBean(BinLogConfigHook.class);
-            binlogConfigMapper.configReset(binLogConfig);
+            binlogConfigMapper.config(binLogConfig);
         }
     }
 

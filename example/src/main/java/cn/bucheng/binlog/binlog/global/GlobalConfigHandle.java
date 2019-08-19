@@ -22,7 +22,7 @@ public class GlobalConfigHandle implements BinLogConfigHook {
     private RedisTemplate<String, String> redisTemplate;
 
     @Override
-    public void configReset(BinLogConfig config) {
+    public void config(BinLogConfig config) {
         Object filename = redisTemplate.opsForHash().get(BinLogConstant.BINLOG_PREFIX + "es", BinLogConstant.BINLOG_FILE);
         Object position = redisTemplate.opsForHash().get(BinLogConstant.BINLOG_PREFIX + "es", BinLogConstant.BINLOG_POSITION);
         if (filename != null && !filename.equals("") && position != null && !"".equals(position + "")) {

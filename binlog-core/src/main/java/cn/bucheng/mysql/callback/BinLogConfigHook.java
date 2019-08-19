@@ -8,5 +8,5 @@ import cn.bucheng.mysql.binlog.BinLogConfig;
  * @describe
  */
 public interface BinLogConfigHook {
-    void configReset(BinLogConfig config);
+    void config(BinLogConfig config);
 }
