@@ -14,19 +14,19 @@ import java.io.Serializable;
  */
 @Component
 @Slf4j
-public class BookListener implements IListener<BookEntity> {
+public class BookListener implements IListener<BookDO> {
     @Override
     public Class getClassType() {
-        return BookEntity.class;
+        return BookDO.class;
     }
 
     @Override
-    public void saveEvent(BookEntity data) {
+    public void saveEvent(BookDO data) {
         log.info("save event, " + data);
     }
 
     @Override
-    public void updateEvent(BookEntity data) {
+    public void updateEvent(BookDO data) {
         log.info("update event," + data);
     }
 

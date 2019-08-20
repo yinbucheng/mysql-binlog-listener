@@ -15,16 +15,16 @@ import java.util.Map;
  */
 @Component
 @Slf4j
-public class BookHandle implements FieldValueHandle<BookEntity> {
+public class BookHandle implements FieldValueHandle<BookDO> {
     @Override
     public Class getClassType() {
-        return BookEntity.class;
+        return BookDO.class;
     }
 
     @Override
-    public BookEntity handle(Map<String, Serializable> values) {
+    public BookDO handle(Map<String, Serializable> values) {
         log.info("decode column value to object");
-        BookEntity entity = BinLogUtils.decode(BookEntity.class, values);
+        BookDO entity = BinLogUtils.decode(BookDO.class, values);
         Serializable content = values.get("content");
         if(content!=null){
             byte[] contentData = (byte[])content;

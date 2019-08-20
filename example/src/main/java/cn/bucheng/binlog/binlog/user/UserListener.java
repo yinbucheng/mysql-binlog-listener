@@ -15,19 +15,19 @@ import java.io.Serializable;
  */
 @Component
 @Slf4j
-public class UserListener implements IListener<UserPO> {
+public class UserListener implements IListener<UserDO> {
     @Override
     public Class getClassType() {
-        return UserPO.class;
+        return UserDO.class;
     }
 
     @Override
-    public void saveEvent(UserPO data) {
+    public void saveEvent(UserDO data) {
         log.info("save user event1,content:{}", data);
     }
 
     @Override
-    public void updateEvent(UserPO data) {
+    public void updateEvent(UserDO data) {
         log.info("update user event1,content:{}", data);
     }
 

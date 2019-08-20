@@ -21,7 +21,7 @@ import java.util.Date;
 @AllArgsConstructor
 @ToString
 @cn.bucheng.mysql.annotation.TableName(schema = "ad_test", table = "ad_book")
-public class BookEntity implements Serializable {
+public class BookDO implements Serializable {
     private Long id;
     private String name;
     private String title;

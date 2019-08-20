@@ -21,7 +21,7 @@ import java.util.Date;
 @NoArgsConstructor
 @ToString
 @TableName(schema = "ad_test", table = "ad_user")
-public class UserPO implements Serializable {
+public class UserDO implements Serializable {
     private Long id;
     private String name;
     private Integer age;
