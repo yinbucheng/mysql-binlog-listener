@@ -15,10 +15,14 @@ import org.apache.logging.log4j.util.Strings;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import javax.annotation.PostConstruct;
+import javax.annotation.PreDestroy;
 import java.io.Serializable;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.concurrent.atomic.AtomicIntegerArray;
 
 
 @Component
@@ -30,13 +34,14 @@ public class CompositeListener implements BinaryLogClient.EventListener {
     @Autowired
     private TableColumnIdAndNameHolder holder;
 
+    private IBinLogFileListener binLogFileListener;
+
 
     @Override
     public void onEvent(Event event) {
         EventType eventType = event.getHeader().getEventType();
         if (eventType == EventType.ROTATE) {
             RotateEventData data = event.getData();
-            IBinLogFileListener binLogFileListener = getBinLogFileListener();
             if (binLogFileListener != null) {
                 binLogFileListener.handleBinLogFile(data.getBinlogFilename(), data.getBinlogPosition());
             }
@@ -75,14 +80,20 @@ public class CompositeListener implements BinaryLogClient.EventListener {
         }
     }
 
-    private IBinLogFileListener getBinLogFileListener() {
+    @PostConstruct
+    private void initBinLogFileListener() {
         String[] beanNamesForType = BeanFactoryUtils.getBeanFactory().getBeanNamesForType(IBinLogFileListener.class);
         if (beanNamesForType == null || beanNamesForType.length == 0) {
-            return null;
+            return;
         }
-        return BeanFactoryUtils.getBeanFactory().getBean(IBinLogFileListener.class);
+        binLogFileListener = BeanFactoryUtils.getBeanFactory().getBean(IBinLogFileListener.class);
     }
 
+    /**
+     * 处理binlog中的保存数据记录
+     * @param key 唯一标示
+     * @param data 添加数据
+     */
     @SuppressWarnings("all")
     private void handleSave(String key, WriteRowsEventData data) {
         List<IListener> listeners = holder.getListenerByKey(key);
@@ -115,6 +126,11 @@ public class CompositeListener implements BinaryLogClient.EventListener {
 
     }
 
+    /**
+     * 处理binlog中的更新事件
+     * @param key 唯一标示
+     * @param data 更新数据
+     */
     @SuppressWarnings("all")
     private void handleUpdate(String key, UpdateRowsEventData data) {
         List<IListener> listeners = holder.getListenerByKey(key);
@@ -145,6 +161,11 @@ public class CompositeListener implements BinaryLogClient.EventListener {
         }
     }
 
+    /**
+     * 处理binlog的删除事件
+     * @param key 唯一标示
+     * @param data 删除的数据
+     */
     private void handleDelete(String key, DeleteRowsEventData data) {
         List<IListener> listeners = holder.getListenerByKey(key);
         if (listeners == null || listeners.size() == 0) {

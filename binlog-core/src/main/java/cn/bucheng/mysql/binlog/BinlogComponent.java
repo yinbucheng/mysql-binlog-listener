@@ -38,7 +38,7 @@ public class BinlogComponent implements CommandLineRunner {
                     config.getUsername(),
                     config.getPassword()
             );
-            retryRestConfig(config);
+            tryResetConfig(config);
             if (!StringUtils.isEmpty(config.getFile())) {
                 client.setBinlogFilename(config.getFile());
             }
@@ -64,7 +64,11 @@ public class BinlogComponent implements CommandLineRunner {
         log.info("start binlog listener client ");
     }
 
-    private void retryRestConfig(BinLogConfig binLogConfig) {
+    /**
+     * 试图重新进行设置binlog的配置
+     * @param binLogConfig
+     */
+    private void tryResetConfig(BinLogConfig binLogConfig) {
         String[] beanNamesForType = BeanFactoryUtils.getBeanFactory().getBeanNamesForType(BinLogConfigHook.class);
         if (beanNamesForType != null && beanNamesForType.length != 0) {
             BinLogConfigHook binlogConfigMapper = BeanFactoryUtils.getBeanFactory().getBean(BinLogConfigHook.class);
