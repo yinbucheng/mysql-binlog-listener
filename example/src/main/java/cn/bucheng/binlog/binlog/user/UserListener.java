@@ -23,16 +23,16 @@ public class UserListener implements IListener<UserDO> {
 
     @Override
     public void saveEvent(UserDO data) {
-        log.info("save user event1,content:{}", data);
+        log.info("save user event,data:{}", data);
     }
 
     @Override
     public void updateEvent(UserDO data) {
-        log.info("update user event1,content:{}", data);
+        log.info("update user event,data:{}", data);
     }
 
     @Override
     public void deleteEvent(Serializable id) {
-        log.info("delete user event1,id:{}", id);
+        log.info("delete user event,id:{}", id);
     }
 }
