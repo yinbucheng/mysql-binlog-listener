@@ -13,9 +13,15 @@ import java.lang.annotation.Target;
 @Retention(RetentionPolicy.RUNTIME)
 @Target(ElementType.FIELD)
 public @interface ColumnName {
-    //sql映射的列名
+    /**
+     * sql映射的列名
+     * @return
+     */
     String sqlColumn();
 
-    //java对应的类型
+    /**
+     * java 类型对的字段名称
+     * @return
+     */
     String javaColumn() default "";
 }
