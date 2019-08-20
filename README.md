@@ -169,4 +169,6 @@ public class GlobalConfigHandle implements BinLogConfigHook {
 >>2:不要在监听器中进行耗时操作，这样会阻塞其他监听器及时接收消息能力。如果需要耗时的操作请采用开启线程进行操作
 ```
 
+## 示例代码
 
+请查看example模块中的readme
