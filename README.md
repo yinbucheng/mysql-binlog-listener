@@ -153,7 +153,7 @@ public class GlobalConfigHandle implements BinLogConfigHook {
 
 
     @Override
-    public void configReset(BinLogConfig config) {
+    public void config(BinLogConfig config) {
         Object filename = redisTemplate.opsForHash().get("es-boot-binLog", "filename");
         Object position = redisTemplate.opsForHash().get("es-boot-binLog", "position");
         if (filename != null && !filename.equals("") && position != null && !"".equals(position + "")) {
