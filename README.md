@@ -11,7 +11,7 @@ show variables like 'binlog_format';
 
 3.如果以上都不是请修改mysql的配置文件添加或者修改如下内容
 #配置binlog存放路径
-log-bin=E://cn.bucheng.mysql//binlog//cn.bucheng.mysql-bin
+log-bin=E://mysql//binlog//cn.bucheng.mysql-bin
 #bin日志的格式 Mixed/row
 binlog-format=row
 
