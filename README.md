@@ -44,7 +44,7 @@ mysql.binlog.password=123456
 @NoArgsConstructor
 @AllArgsConstructor
 @ToString
-@cn.bucheng.cn.bucheng.mysql.annotation.TableName(schema = "ad_test", table = "ad_book")
+@TableName(schema = "ad_test", table = "ad_book")
 public class BookEntity implements Serializable {
    //如果数据库中列表和表名相同可以不用添加Column注解
     private Long id;
