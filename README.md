@@ -1,4 +1,4 @@
-# cn.bucheng.mysql binlog监听器
+# mysql binlog监听器
 
 ## 前置操作
 
