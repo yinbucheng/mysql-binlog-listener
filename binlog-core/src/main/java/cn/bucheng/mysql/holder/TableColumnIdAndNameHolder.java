@@ -67,6 +67,9 @@ public class TableColumnIdAndNameHolder implements CommandLineRunner {
     private String password;
 
 
+    /**
+     * 从spring的ioc容器中获取监听器以及特殊处理器并设置上去
+     */
     private void register() {
         String[] beanNamesForTypes = BeanFactoryUtils.getBeanFactory().getBeanNamesForType(IListener.class);
         if (beanNamesForTypes != null) {
@@ -184,6 +187,9 @@ public class TableColumnIdAndNameHolder implements CommandLineRunner {
     }
 
 
+    /**
+     * 进行初始表中索引和字段对应关系
+     */
     private void initTableIdAndColumn() {
         log.info("begin load table column id and name from mysql");
         //完成id到名称初始化
