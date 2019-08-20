@@ -36,6 +36,7 @@ public class CompositeListener implements BinaryLogClient.EventListener {
 
     private IBinLogFileListener binLogFileListener;
 
+    private BinLogCommitPosition binLogCommitPosition;
 
     @Override
     public void onEvent(Event event) {
@@ -73,14 +74,26 @@ public class CompositeListener implements BinaryLogClient.EventListener {
     //这里用于处理事务提交一般结合启动加载position实现异常恢复
     private void handleCommitPosition(EventHeaderV4 headerV4) {
         long position = headerV4.getNextPosition();
-        String[] beanNamesForType = BeanFactoryUtils.getBeanFactory().getBeanNamesForType(BinLogCommitPosition.class);
-        if (beanNamesForType != null && beanNamesForType.length > 0) {
-            BinLogCommitPosition bean = BeanFactoryUtils.getBeanFactory().getBean(BinLogCommitPosition.class);
-            bean.commitBinLogPosition(position);
+        if (binLogCommitPosition != null) {
+            binLogCommitPosition.commitBinLogPosition(position);
         }
     }
 
     @PostConstruct
+    private void init() {
+        initBinLogCommitPosition();
+        initBinLogFileListener();
+    }
+
+
+    private void initBinLogCommitPosition() {
+        String[] beanNamesForType = BeanFactoryUtils.getBeanFactory().getBeanNamesForType(BinLogCommitPosition.class);
+        if (beanNamesForType != null && beanNamesForType.length > 0) {
+            binLogCommitPosition = BeanFactoryUtils.getBeanFactory().getBean(BinLogCommitPosition.class);
+        }
+    }
+
+
     private void initBinLogFileListener() {
         String[] beanNamesForType = BeanFactoryUtils.getBeanFactory().getBeanNamesForType(IBinLogFileListener.class);
         if (beanNamesForType == null || beanNamesForType.length == 0) {
@@ -91,7 +104,8 @@ public class CompositeListener implements BinaryLogClient.EventListener {
 
     /**
      * 处理binlog中的保存数据记录
-     * @param key 唯一标示
+     *
+     * @param key  唯一标示
      * @param data 添加数据
      */
     @SuppressWarnings("all")
@@ -128,7 +142,8 @@ public class CompositeListener implements BinaryLogClient.EventListener {
 
     /**
      * 处理binlog中的更新事件
-     * @param key 唯一标示
+     *
+     * @param key  唯一标示
      * @param data 更新数据
      */
     @SuppressWarnings("all")
@@ -163,7 +178,8 @@ public class CompositeListener implements BinaryLogClient.EventListener {
 
     /**
      * 处理binlog的删除事件
-     * @param key 唯一标示
+     *
+     * @param key  唯一标示
      * @param data 删除的数据
      */
     private void handleDelete(String key, DeleteRowsEventData data) {
