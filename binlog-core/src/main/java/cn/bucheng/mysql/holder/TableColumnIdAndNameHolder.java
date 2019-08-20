@@ -44,6 +44,8 @@ public class TableColumnIdAndNameHolder implements CommandLineRunner {
     public static final String TABLE_NAME = "table_name";
     public static final String TABLE_SCHEMA = "table_schema";
     public static final String COLUMN_NAME = "column_name";
+    public static final char UPPER_A = 'A';
+    public static final char UPPER_Z = 'Z';
     private Object listenerLock = new Object();
 
     private Map<String, FieldValueHandle> handleMap = new ConcurrentHashMap<>();
@@ -171,7 +173,7 @@ public class TableColumnIdAndNameHolder implements CommandLineRunner {
         StringBuilder sb = new StringBuilder();
         char[] chars = fieldName.toCharArray();
         for (char ch : chars) {
-            if (ch >= 'A' && ch <= 'Z') {
+            if (ch >= UPPER_A && ch <= UPPER_Z) {
                 sb.append("_");
                 sb.append((char) (ch + 32));
             } else {
