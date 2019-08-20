@@ -32,10 +32,10 @@ binlog-format=row
 
 
 3.添加下面配置
-cn.bucheng.mysql.binlog.host=127.0.0.1
-cn.bucheng.mysql.binlog.port=3306
-cn.bucheng.mysql.binlog.username=root
-cn.bucheng.mysql.binlog.password=123456
+mysql.binlog.host=127.0.0.1
+mysql.binlog.port=3306
+mysql.binlog.username=root
+mysql.binlog.password=123456
 
 4.创建需要监听的实体对象
 (目前默认将java字段转数库字段规则：将大写字母小写并在前面添加_ 比如 userName -转变为-> user_name)
