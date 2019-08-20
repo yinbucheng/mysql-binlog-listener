@@ -40,6 +40,10 @@ import java.util.concurrent.ConcurrentHashMap;
 @Order(-Integer.MAX_VALUE)
 public class TableColumnIdAndNameHolder implements CommandLineRunner {
 
+    public static final String ORDINAL_POSITION = "ordinal_position";
+    public static final String TABLE_NAME = "table_name";
+    public static final String TABLE_SCHEMA = "table_schema";
+    public static final String COLUMN_NAME = "column_name";
     private Object listenerLock = new Object();
 
     private Map<String, FieldValueHandle> handleMap = new ConcurrentHashMap<>();
@@ -87,8 +91,8 @@ public class TableColumnIdAndNameHolder implements CommandLineRunner {
     private TableName getTableName(Class clazz) {
         TableName annotation = (TableName) clazz.getAnnotation(TableName.class);
         if (annotation == null) {
-            log.error("please mark cn.bucheng.mysql.binloglistener.annotation.TableName annotation to bo");
-            throw new RuntimeException("please mark cn.bucheng.mysql.binloglistener.annotation.TableName annotation to bo");
+            log.error("please mark TableName annotation to DO");
+            throw new RuntimeException("please mark TableName annotation to DO");
         }
         return annotation;
     }
@@ -184,10 +188,10 @@ public class TableColumnIdAndNameHolder implements CommandLineRunner {
         JDBCUtils.mysqlQuery("jdbc:mysql://" + host + ":" + port + "/mysql?serverTimezone=GMT%2B8", username, password, SQL, new MysqlRowMapper() {
             @Override
             public void mapRow(ResultSet rs) throws SQLException {
-                int position = rs.getInt("ordinal_position");
-                String tableName = rs.getString("table_name").toLowerCase();
-                String dbName = rs.getString("table_schema").toLowerCase();
-                String columnName = rs.getString("column_name");
+                int position = rs.getInt(ORDINAL_POSITION);
+                String tableName = rs.getString(TABLE_NAME).toLowerCase();
+                String dbName = rs.getString(TABLE_SCHEMA).toLowerCase();
+                String columnName = rs.getString(COLUMN_NAME);
                 String key = BinLogUtils.createKey(dbName, tableName);
                 TableBO tableBO = cache.get(key);
                 if (tableBO == null) {
