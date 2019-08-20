@@ -8,5 +8,9 @@ package cn.bucheng.mysql.callback;
  * @version:
  */
 public interface BinLogCommitPosition {
+    /**
+     * 用于更新系统中处理的binlog的偏移量
+     * @param position binlog的偏移量
+     */
     void commitBinLogPosition(long position);
 }
