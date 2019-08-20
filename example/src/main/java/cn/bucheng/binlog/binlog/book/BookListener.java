@@ -22,16 +22,16 @@ public class BookListener implements IListener<BookDO> {
 
     @Override
     public void saveEvent(BookDO data) {
-        log.info("save event, " + data);
+        log.info("save book event,data:{} " , data);
     }
 
     @Override
     public void updateEvent(BookDO data) {
-        log.info("update event," + data);
+        log.info("update book event, data:{}" ,data);
     }
 
     @Override
     public void deleteEvent(Serializable id) {
-        log.info("delete event," + id);
+        log.info("delete book event id:{}" ,id);
     }
 }
