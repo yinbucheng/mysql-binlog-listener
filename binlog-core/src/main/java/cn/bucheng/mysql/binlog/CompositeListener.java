@@ -42,10 +42,7 @@ public class CompositeListener implements BinaryLogClient.EventListener {
     public void onEvent(Event event) {
         EventType eventType = event.getHeader().getEventType();
         if (eventType == EventType.ROTATE) {
-            RotateEventData data = event.getData();
-            if (binLogFileListener != null) {
-                binLogFileListener.handleBinLogFile(data.getBinlogFilename(), data.getBinlogPosition());
-            }
+            handleBinLogFile(event);
             return;
         }
         if (eventType == EventType.TABLE_MAP) {
@@ -71,7 +68,21 @@ public class CompositeListener implements BinaryLogClient.EventListener {
         }
     }
 
-    //这里用于处理事务提交一般结合启动加载position实现异常恢复
+    /**
+     * 处理binlog的文件名称和位置
+     * @param event
+     */
+    private void handleBinLogFile(Event event) {
+        RotateEventData data = event.getData();
+        if (binLogFileListener != null) {
+            binLogFileListener.handleBinLogFile(data.getBinlogFilename(), data.getBinlogPosition());
+        }
+    }
+
+    /**
+     * 处理binlog的偏移量
+     * @param headerV4
+     */
     private void handleCommitPosition(EventHeaderV4 headerV4) {
         long position = headerV4.getNextPosition();
         if (binLogCommitPosition != null) {
