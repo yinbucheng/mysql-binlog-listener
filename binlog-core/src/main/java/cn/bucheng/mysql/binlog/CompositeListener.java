@@ -21,7 +21,12 @@ import java.io.Serializable;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.LinkedBlockingQueue;
+import java.util.concurrent.ThreadFactory;
+import java.util.concurrent.ThreadPoolExecutor;
+import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.atomic.AtomicIntegerArray;
 
 
@@ -38,8 +43,23 @@ public class CompositeListener implements BinaryLogClient.EventListener {
 
     private BinLogCommitPosition binLogCommitPosition;
 
+    private AtomicInteger threadIndex = new AtomicInteger(0);
+
+    private ThreadPoolExecutor executor = new ThreadPoolExecutor(Runtime.getRuntime().availableProcessors() * 2, Runtime.getRuntime().availableProcessors() * 2, 10, TimeUnit.SECONDS, new LinkedBlockingQueue<>(), new ThreadFactory() {
+        @Override
+        public Thread newThread(Runnable r) {
+            return new Thread(r, "execute_thread_" + threadIndex.getAndIncrement());
+        }
+    });
+
     @Override
     public void onEvent(Event event) {
+        executor.execute(() ->
+                handleEvent(event)
+        );
+    }
+
+    private void handleEvent(Event event) {
         EventType eventType = event.getHeader().getEventType();
         if (eventType == EventType.ROTATE) {
             handleBinLogFile(event);
@@ -70,6 +90,7 @@ public class CompositeListener implements BinaryLogClient.EventListener {
 
     /**
      * 处理binlog的文件名称和位置
+     *
      * @param event
      */
     private void handleBinLogFile(Event event) {
@@ -81,6 +102,7 @@ public class CompositeListener implements BinaryLogClient.EventListener {
 
     /**
      * 处理binlog的偏移量
+     *
      * @param headerV4
      */
     private void handleCommitPosition(EventHeaderV4 headerV4) {
