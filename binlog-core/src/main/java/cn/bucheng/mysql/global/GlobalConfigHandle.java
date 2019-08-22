@@ -1,4 +1,4 @@
-package cn.bucheng.binlog.binlog.global;
+package cn.bucheng.mysql.global;
 
 import cn.bucheng.mysql.binlog.BinLogConfig;
 import cn.bucheng.mysql.callback.BinLogConfigHook;
