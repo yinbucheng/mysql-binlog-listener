@@ -44,6 +44,13 @@ mysql.binlog.port=3306
 mysql.binlog.username=root
 mysql.binlog.password=123456
 
+spring.redis.host=127.0.0.1
+spring.redis.port=6379
+spring.redis.database=10
+#spring.redis.password=
+spring.redis.jedis.pool.max-active=50
+spring.redis.jedis.pool.min-idle=20
+
 4.创建需要监听的实体对象
 (目前默认将java字段转数库字段规则：将大写字母小写并在前面添加_ 比如 userName -转变为-> user_name)
 
